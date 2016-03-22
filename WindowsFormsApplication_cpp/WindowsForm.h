@@ -335,108 +335,201 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 				catch (const char *message)
 				{
 					std::string s = message;
-					String^ temp;
-					for (int i = 0; i < s.size(); i++) {
-						temp += s[i];
-					}
-					Output->Text += temp + Environment::NewLine;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
 				}
 			}
 			else if (userCommand[0] == "5") {
-				Output->Text = "";
-				double out = vectoroperate->Ope5(userCommand[1], vectors);
-				Output->Text += "Norm[" + userCommand[1] + "] = " + out + Environment::NewLine;
+				try {
+					Output->Text = "";
+					double out = vectoroperate->Ope5(userCommand[1], vectors);
+					Output->Text += "Norm[" + userCommand[1] + "] = " + out + Environment::NewLine;
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
 			}
 			else if (userCommand[0] == "6") {
-				Output->Text = "";
-				Vector out = vectoroperate->Ope6(userCommand[1], vectors);
-				Output->Text += "Normal[" + userCommand[1] + "] = [";
-				for (int i = 0; i < out.Data.size(); i++) {
-					Output->Text += out.Data[i];
-					if (i < out.Data.size() - 1) Output->Text += " , ";
+				try {
+					Output->Text = "";
+					Vector out = vectoroperate->Ope6(userCommand[1], vectors);
+					Output->Text += "Normal[" + userCommand[1] + "] = [";
+					for (int i = 0; i < out.Data.size(); i++) {
+						Output->Text += out.Data[i];
+						if (i < out.Data.size() - 1) Output->Text += " , ";
+					}
+					Output->Text += "]" + Environment::NewLine;
 				}
-				Output->Text += "]" + Environment::NewLine;
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
 			}
 			else if (userCommand[0] == "7") {
-				Output->Text = "";
-				Vector out = vectoroperate->Ope7(userCommand[1], vectors);
-				Output->Text += "Cross [" + userCommand[1] + "] = [";
-				for (int i = 0; i < out.Data.size(); i++) {
-					Output->Text += out.Data[i];
-					if (i < out.Data.size() - 1) Output->Text += " , ";
+				try {
+					Output->Text = "";
+					Vector out = vectoroperate->Ope7(userCommand[1], vectors);
+					Output->Text += "Cross [" + userCommand[1] + "] = [";
+					for (int i = 0; i < out.Data.size(); i++) {
+						Output->Text += out.Data[i];
+						if (i < out.Data.size() - 1) Output->Text += " , ";
+					}
+					Output->Text += "]" + Environment::NewLine;
 				}
-				Output->Text += "]" + Environment::NewLine;
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
 			}
 			else if (userCommand[0] == "8") {
-				Output->Text = "";
-				Vector a = vectoroperate->Ope8(userCommand[1], vectors);
-				Output->Text += "Com [" + userCommand[1] + "] = ";
-				Output->Text += a.Data[0] + Environment::NewLine;
+				try {
+					Output->Text = "";
+					Vector a = vectoroperate->Ope8(userCommand[1], vectors);
+					Output->Text += "Com [" + userCommand[1] + "] = ";
+					Output->Text += a.Data[0] + Environment::NewLine;
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
 			}
 			else if (userCommand[0] == "9") {
-				Output->Text = "";
-				Vector out = vectoroperate->Ope9(userCommand[1], vectors);
-				Output->Text += "Proj [" + userCommand[1] + "] = [";
-				for (int i = 0; i < out.Data.size(); i++) {
-					Output->Text += out.Data[i];
-					if (i < out.Data.size() - 1) Output->Text += " , ";
+				try {
+					Output->Text = "";
+					Vector out = vectoroperate->Ope9(userCommand[1], vectors);
+					Output->Text += "Proj [" + userCommand[1] + "] = [";
+					for (int i = 0; i < out.Data.size(); i++) {
+						Output->Text += out.Data[i];
+						if (i < out.Data.size() - 1) Output->Text += " , ";
+					}
+					Output->Text += "]" + Environment::NewLine;
 				}
-				Output->Text += "]" + Environment::NewLine;
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
 			}
 			else if (userCommand[0] == "10") {
-				Output->Text = "";
-				double out = vectoroperate->Ope10(userCommand[1], vectors);
-				Output->Text += "Area [" + userCommand[1] + "] = " + out + Environment::NewLine;
+				try {
+					Output->Text = "";
+					double out = vectoroperate->Ope10(userCommand[1], vectors);
+					Output->Text += "Area [" + userCommand[1] + "] = " + out + Environment::NewLine;
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
 			}
 			else if (userCommand[0] == "11") {
-				Output->Text = "";
-				bool out = vectoroperate->Ope11(userCommand[1], vectors);
-				Output->Text += "Parallel [" + userCommand[1] + "] = ";
-				if (out) Output->Text += "Yes" + Environment::NewLine;
-				else Output->Text += "No" + Environment::NewLine;
+				try {
+					Output->Text = "";
+					bool out = vectoroperate->Ope11(userCommand[1], vectors);
+					Output->Text += "Parallel [" + userCommand[1] + "] = ";
+					if (out) Output->Text += "Yes" + Environment::NewLine;
+					else Output->Text += "No" + Environment::NewLine;
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
 			}
 			else if (userCommand[0] == "12") {
-				Output->Text = "";
-				bool out = vectoroperate->Ope12(userCommand[1], vectors);
-				Output->Text += "Orthogonal [" + userCommand[1] + "] = ";
-				if (out) Output->Text += "Yes" + Environment::NewLine;
-				else Output->Text += "No" + Environment::NewLine;
+				try {
+					Output->Text = "";
+					bool out = vectoroperate->Ope12(userCommand[1], vectors);
+					Output->Text += "Orthogonal [" + userCommand[1] + "] = ";
+					if (out) Output->Text += "Yes" + Environment::NewLine;
+					else Output->Text += "No" + Environment::NewLine;
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
 			}
 			else if (userCommand[0] == "13") {
-				Output->Text = "";
-				double out = vectoroperate->Ope13(userCommand[1], vectors);
-				Output->Text += "Theta [" + userCommand[1] + "] = " + out + Environment::NewLine;
+				try {
+					Output->Text = "";
+					double out = vectoroperate->Ope13(userCommand[1], vectors);
+					Output->Text += "Theta [" + userCommand[1] + "] = " + out + Environment::NewLine;
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
 			}
 			else if (userCommand[0] == "14") {
-				Output->Text = "";
-				Vector out = vectoroperate->Ope7(userCommand[1], vectors);
-				Output->Text += "pN [" + userCommand[1] + "] = [";
-				for (int i = 0; i < out.Data.size(); i++) {
-					Output->Text += out.Data[i];
-					if (i < out.Data.size() - 1) Output->Text += " , ";
+				try {
+					Output->Text = "";
+					Vector out = vectoroperate->Ope7(userCommand[1], vectors);
+					Output->Text += "pN [" + userCommand[1] + "] = [";
+					for (int i = 0; i < out.Data.size(); i++) {
+						Output->Text += out.Data[i];
+						if (i < out.Data.size() - 1) Output->Text += " , ";
+					}
+					Output->Text += "]" + Environment::NewLine;
 				}
-				Output->Text += "]" + Environment::NewLine;
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
 			}
 			else if (userCommand[0] == "15") {
-				Output->Text = "";
-				bool out = vectoroperate->Ope15(userCommand[1], vectors);
-				Output->Text += "isLI [" + userCommand[1] + "] = ";
-				if (out) Output->Text += "Yes" + Environment::NewLine;
-				else Output->Text += "No" + Environment::NewLine;
+				try {
+					Output->Text = "";
+					bool out = vectoroperate->Ope15(userCommand[1], vectors);
+					Output->Text += "isLI [" + userCommand[1] + "] = ";
+					if (out) Output->Text += "Yes" + Environment::NewLine;
+					else Output->Text += "No" + Environment::NewLine;
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
 			}
 			else if (userCommand[0] == "16") {
-				Output->Text = "";
-				Vector out = vectoroperate->Ope16(userCommand[1], vectors);
-				Output->Text += "ob [" + userCommand[1] + "] = ";
-				int num = std::stoi(out.Name);
-				for (int i = 0; i < num; i++) {
-					Output->Text += "[";
-					for (int k = 0; k < num; k++) {
-						if (k < num - 1)Output->Text += out.Data[i * 3 + k] + ",";
-						else Output->Text += out.Data[i * 3 + k];
+				try {
+					Output->Text = "";
+					Vector out = vectoroperate->Ope16(userCommand[1], vectors);
+					Output->Text += "ob [" + userCommand[1] + "] = ";
+					int num = std::stoi(out.Name);
+					for (int i = 0; i < num; i++) {
+						Output->Text += "[";
+						for (int k = 0; k < num; k++) {
+							if (k < num - 1)Output->Text += out.Data[i * 3 + k] + ",";
+							else Output->Text += out.Data[i * 3 + k];
+						}
+						if (i < num - 1)Output->Text += "] , ";
+						else Output->Text += "]";
 					}
-					if (i < num - 1)Output->Text += "] , ";
-					else Output->Text += "]";
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
 				}
 			}
 			//反之則判斷找不到指令
@@ -487,10 +580,31 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 					}
 				}
 			}
-			else if (userCommand[0] == "1") {
+			else if (userCommand[0] == "1"|| userCommand[0] == "2") {
 				Output->Text = "";
 				std::vector<Vector> out = matrixoperate->Ope1(userCommand[1], matrixs);
 				Output->Text += "[";
+				for (unsigned int j = 0; j < out.size(); j++)
+				{
+					for (unsigned int k = 0; k < out[j].Data.size(); k++) {
+						Output->Text += out[j].Data[k].ToString();
+						//num++;
+						if (k != out[j].Data.size() - 1)
+							Output->Text += ",";
+					}
+					if (j < out.size() - 1)Output->Text += "],[";
+				}
+				Output->Text += "]";
+			}
+			else if (userCommand[0] == "3") {
+				Output->Text = "";
+				int out = matrixoperate->Ope3(userCommand[1], matrixs);
+				Output->Text += "Rank(" + userCommand[1] + ") = " + out;
+			}
+			else if (userCommand[0] == "4") {
+				Output->Text = "";
+				std::vector<Vector> out = matrixoperate->Ope4(userCommand[1], matrixs);
+				Output->Text += "Tran[";
 				for (unsigned int j = 0; j < out.size(); j++)
 				{
 					for (unsigned int k = 0; k < out[j].Data.size(); k++) {

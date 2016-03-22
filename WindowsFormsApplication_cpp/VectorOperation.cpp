@@ -469,7 +469,8 @@ double VectorOperate::Ope5(String^ input, std::vector<Vector> vectors) {
 }
 
 Vector VectorOperate::Ope1(String^ input, vector<Vector> vectors) {
-	Vector v = count(input, vectors);
+		Vector v = count(input, vectors);
+		return v;
 	//--------------------------------------------------------------------------------//
 	//cout << temps.size();
 	//cout << temps[0].Name;
@@ -480,7 +481,7 @@ Vector VectorOperate::Ope1(String^ input, vector<Vector> vectors) {
 	//cout << "\n";
 	//for (int i = 0; i<sorted.size(); i++) std::cout << sorted[i]<< "  ";
 	//cout << "\n";
-	return v;
+
 }
 
 Vector count(String^ input, std::vector<Vector> vectors) {
@@ -551,6 +552,7 @@ Vector count(String^ input, std::vector<Vector> vectors) {
 				else if (temps[temps.size() - 1].Name[0] == temps[temps.size() - 2].Name[0] && temps[temps.size() - 2].Name[0] == '$') {
 					if (temps[temps.size() - 1].Data.size() != temps[temps.size() - 2].Data.size()) {
 						throw "Can't Compute : size of vectors aren't the same";
+						cout << "123";
 					}
 					Vector add;
 					add.Name = "$addvector";
@@ -610,6 +612,7 @@ Vector count(String^ input, std::vector<Vector> vectors) {
 					double sum;
 					//兩者向量各自乘
 					if (temps[temps.size() - 1].Data.size() != temps[temps.size() - 2].Data.size()) {
+						cout << "123456";
 						throw "Can't Compute : size of vectors aren't the same";
 					}//處理例外
 					for (int i = 0; i < temps[temps.size() - 1].Data.size(); i++) {
