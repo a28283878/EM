@@ -664,7 +664,7 @@ Vector guess(vector<Vector> v) {
 		}
 		for (int k = i + 1; k < datanum; k++) {
 			double c = (v[i].Data[k] / v[i].Data[i])*(-1);
-			for (int j = i; j < datanum; j++) {
+			for (int j = i; j < datanum +1 ; j++) {
 				if (i == j) {
 					v[j].Data[k] = 0;
 				}

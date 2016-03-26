@@ -5,10 +5,61 @@
 #include "stdio.h"
 using namespace std;
 vector<Vector> gauss(vector<Vector> input);
+vector<Vector> gauss2(vector<Vector> input);
 vector<Vector> count(String^ input, std::vector<std::vector<Vector>> matrixs);//四則運算
 
-vector<double> MatrixOperate::Ope5(String^ input, std::vector<std::vector<Vector>> matrixs) {
+vector<Vector> MatrixOperate::Ope7(String^ input, std::vector<std::vector<Vector>> matrixs) {
+	vector<Vector> inverse = count(input, matrixs);
+	if(inverse.size() != inverse[0].Data.size()) throw "行列不同";//行列不同
+	double det = Ope6(input, matrixs);
+	if (det == 0) throw "無解";
+	vector<Vector> identity;
+	for (int i = 0; i < inverse.size(); i++) {
+		Vector temp;
+		for (int k = 0; k < inverse.size(); k++) {		
+			if(i == k)temp.Data.push_back(1);
+			else temp.Data.push_back(0);
+		}
+		identity.push_back(temp);
+	}//製作單位矩陣
+	Vector initial;
+	vector<Vector> x(inverse.size(), initial);
+	for (int i = 0; i < inverse.size(); i++) {
+		vector<Vector> temp = inverse;
+		for (int k = 0; k < inverse.size(); k++) {
+			temp[k].Data.push_back(identity[i].Data[k]);
+		}
+		temp = gauss2(temp);
+		for (int k = temp.size() - 1; k >= 0; k--) {
+			x[k].Data.push_back(temp[k].Data[temp.size()] / temp[k].Data[k]);
+			for (int j = k - 1; j >= 0; j--) {
+				temp[j].Data[temp.size()] -= temp[j].Data[k] * x[k].Data[i];
+			}
+		}
+	}
+	for (int i = 0; i < x.size(); i++) {
+		for (int k = 0; k < x.size(); k++) {
+			cout << x[i].Data[k] << " ";
+		}
+		cout << endl;
+	}
+	return x;
+}
+
+double MatrixOperate::Ope6(String^ input, std::vector<std::vector<Vector>> matrixs) {
+	vector<Vector> det = count(input,matrixs);
+	det = gauss(det);
+	double detout = 1;
+	for (int i = 0; i < det.size(); i++) {
+		detout *= det[i].Data[i];
+	}
+
+	return abs(detout);
+}
+
+vector<Vector> MatrixOperate::Ope5(String^ input, std::vector<std::vector<Vector>> matrixs) {
 	vector<Vector> origin = count(input, matrixs);
+	return origin;
 }
 
 vector<Vector> MatrixOperate::Ope4(String^ input, std::vector<std::vector<Vector>> matrixs) {
@@ -169,7 +220,21 @@ vector<Vector> count(String^ input, std::vector<std::vector<Vector>> matrixs) {
 				}
 			}
 			else if (sorted[i] == "/") {
-
+				for (int k = 0; k < temps[temps.size() - 2].size(); k++) {
+					temps[temps.size() - 2][k].Data.push_back(temps[temps.size() - 1][k].Data[0]);
+				}
+				//塞進gauss2 再求B
+				vector<Vector> out = gauss2(temps[temps.size() - 2]);
+				Vector initial;
+				vector<Vector> x(out.size(),initial);
+				for (int k = out.size() - 1; k >= 0; k--) {
+					x[k].Data.push_back(out[k].Data[out.size()] / out[k].Data[k]);
+					for (int j = k - 1; j >= 0; j--) {
+						out[j].Data[out.size()] -= out[j].Data[k]*x[k].Data[0];
+					}
+				}
+				temps.resize(temps.size() - 2);
+				temps.push_back(x);
 			}
 		}
 		//將sorted塞進temps
@@ -215,6 +280,45 @@ vector<Vector> gauss(vector<Vector> input) {
 					else
 					{
 						input[k].Data[j] += c*input[i].Data[j];
+					}*/
+					input[k].Data[j] += c*input[i].Data[j];
+					if (abs(input[k].Data[j]) < 0.000000001) input[k].Data[j] = 0;
+				}
+			}
+		}
+	}
+	return input;
+}
+//a+x 後面有加x 
+vector<Vector> gauss2(vector<Vector> input) {
+	for (int i = 0; i < input.size(); i++) {
+		double maxEl;
+		int maxRow;
+		maxEl = abs(input[i].Data[i]);
+		maxRow = i;
+		for (int k = i + 1; k < input.size(); k++) {
+			if (abs(input[k].Data[i])>maxEl) {
+				maxEl = input[k].Data[i];
+				maxRow = k;
+			}
+		}
+		for (int k = i; k < input.size()+1; k++) {
+			double temp = input[maxRow].Data[k];
+			input[maxRow].Data[k] = input[i].Data[k];
+			input[i].Data[k] = temp;
+		}
+		for (int k = i + 1; k < input.size(); k++) {
+			double c;
+			if (input[i].Data[i] == 0) c = 0;
+			else c = (input[k].Data[i] / input[i].Data[i])*(-1);
+			for (int j = i; j < input.size() +1 ; j++) {
+				if (i == j)input[k].Data[j] = 0;
+				else {
+					/*double check = (input[k].Data[j] / input[i].Data[j]) * (-1);
+					if(check == c) input[k].Data[j] = 0;
+					else
+					{
+					input[k].Data[j] += c*input[i].Data[j];
 					}*/
 					input[k].Data[j] += c*input[i].Data[j];
 					if (abs(input[k].Data[j]) < 0.000000001) input[k].Data[j] = 0;

@@ -617,6 +617,51 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 				}
 				Output->Text += "]";
 			}
+			else if (userCommand[0] == "5") {
+				Output->Text = "";
+				std::vector<Vector> out = matrixoperate->Ope5(userCommand[1], matrixs);
+				Output->Text += "a/b = [";
+				for (unsigned int j = 0; j < out.size(); j++)
+				{
+					for (unsigned int k = 0; k < out[j].Data.size(); k++) {
+						Output->Text += out[j].Data[k].ToString();
+						//num++;
+						if (k != out[j].Data.size() - 1)
+							Output->Text += ",";
+					}
+					if (j < out.size() - 1)Output->Text += "],[";
+				}
+				Output->Text += "]";
+			}
+			else if (userCommand[0] == "6") {
+				Output->Text = "";
+				double out = matrixoperate->Ope6(userCommand[1], matrixs);
+				Output->Text += "det(" + userCommand[1] + ") =  " + out;
+			}
+			else if (userCommand[0] == "7") {
+				try {
+					Output->Text = "";
+					std::vector<Vector> out = matrixoperate->Ope7(userCommand[1], matrixs);
+					Output->Text += "Inverse = [";
+					for (unsigned int j = 0; j < out.size(); j++)
+					{
+						for (unsigned int k = 0; k < out[j].Data.size(); k++) {
+							Output->Text += out[j].Data[k].ToString();
+							//num++;
+							if (k != out[j].Data.size() - 1)
+								Output->Text += ",";
+						}
+						if (j < out.size() - 1)Output->Text += "],[";
+					}
+					Output->Text += "]";
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
+			}
 			else{
 				Output->Text += "-Command not found-" + Environment::NewLine;
 			}
