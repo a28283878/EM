@@ -636,7 +636,7 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 			else if (userCommand[0] == "6") {
 				Output->Text = "";
 				double out = matrixoperate->Ope6(userCommand[1], matrixs);
-				Output->Text += "det(" + userCommand[1] + ") =  " + out;
+				Output->Text += "det(" + userCommand[1] + ") =  " + abs(out);
 			}
 			else if (userCommand[0] == "7") {
 				try {
@@ -654,6 +654,54 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 						if (j < out.size() - 1)Output->Text += "],[";
 					}
 					Output->Text += "]";
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
+			}
+			else if (userCommand[0] == "8") {
+				try {
+					Output->Text = "";
+					std::vector<Vector> out = matrixoperate->Ope8(userCommand[1], matrixs);
+					Output->Text += "Adjoint = [";
+					for (unsigned int j = 0; j < out.size(); j++)
+					{
+						for (unsigned int k = 0; k < out[j].Data.size(); k++) {
+							Output->Text += out[j].Data[k].ToString();
+							//num++;
+							if (k != out[j].Data.size() - 1)
+								Output->Text += ",";
+						}
+						if (j < out.size() - 1)Output->Text += "],[";
+					}
+					Output->Text += "]";
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
+			}
+			else if (userCommand[0] == "9") {
+				try {
+					Output->Text = "";
+					std::vector<Vector> out = matrixoperate->Ope9(userCommand[1], matrixs);
+					/*Output->Text += "Adjoint = [";
+					for (unsigned int j = 0; j < out.size(); j++)
+					{
+						for (unsigned int k = 0; k < out[j].Data.size(); k++) {
+							Output->Text += out[j].Data[k].ToString();
+							//num++;
+							if (k != out[j].Data.size() - 1)
+								Output->Text += ",";
+						}
+						if (j < out.size() - 1)Output->Text += "],[";
+					}
+					Output->Text += "]";*/
 				}
 				catch (const char *message)
 				{

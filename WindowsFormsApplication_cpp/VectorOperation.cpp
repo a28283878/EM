@@ -612,7 +612,6 @@ Vector count(String^ input, std::vector<Vector> vectors) {
 					double sum;
 					//兩者向量各自乘
 					if (temps[temps.size() - 1].Data.size() != temps[temps.size() - 2].Data.size()) {
-						cout << "123456";
 						throw "Can't Compute : size of vectors aren't the same";
 					}//處理例外
 					for (int i = 0; i < temps[temps.size() - 1].Data.size(); i++) {
