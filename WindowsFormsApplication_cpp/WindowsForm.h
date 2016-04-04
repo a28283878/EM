@@ -710,6 +710,78 @@ private: System::Void Input_TextChanged(System::Object^  sender, System::EventAr
 					Output->Text += output;
 				}
 			}
+			else if (userCommand[0] == "10") {
+				try {
+					Output->Text = "";
+					std::vector<Vector> out = matrixoperate->Ope10(userCommand[1], matrixs);
+					/*Output->Text += "Adjoint = [";
+					for (unsigned int j = 0; j < out.size(); j++)
+					{
+					for (unsigned int k = 0; k < out[j].Data.size(); k++) {
+					Output->Text += out[j].Data[k].ToString();
+					//num++;
+					if (k != out[j].Data.size() - 1)
+					Output->Text += ",";
+					}
+					if (j < out.size() - 1)Output->Text += "],[";
+					}
+					Output->Text += "]";*/
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
+			}
+			else if (userCommand[0] == "11") {
+				try {
+					Output->Text = "";
+					std::vector<Vector> out = matrixoperate->Ope11(userCommand[1], matrixs);
+					/*Output->Text += "Adjoint = [";
+					for (unsigned int j = 0; j < out.size(); j++)
+					{
+					for (unsigned int k = 0; k < out[j].Data.size(); k++) {
+					Output->Text += out[j].Data[k].ToString();
+					//num++;
+					if (k != out[j].Data.size() - 1)
+					Output->Text += ",";
+					}
+					if (j < out.size() - 1)Output->Text += "],[";
+					}
+					Output->Text += "]";*/
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
+			}
+			else if (userCommand[0] == "12") {
+				try {
+					Output->Text = "";
+					std::vector<Vector> out = matrixoperate->Ope12(userCommand[1], matrixs);
+					/*Output->Text += "Adjoint = [";
+					for (unsigned int j = 0; j < out.size(); j++)
+					{
+					for (unsigned int k = 0; k < out[j].Data.size(); k++) {
+					Output->Text += out[j].Data[k].ToString();
+					//num++;
+					if (k != out[j].Data.size() - 1)
+					Output->Text += ",";
+					}
+					if (j < out.size() - 1)Output->Text += "],[";
+					}
+					Output->Text += "]";*/
+				}
+				catch (const char *message)
+				{
+					std::string s = message;
+					String^ output = gcnew String(s.c_str());
+					Output->Text += output;
+				}
+			}
 			else{
 				Output->Text += "-Command not found-" + Environment::NewLine;
 			}

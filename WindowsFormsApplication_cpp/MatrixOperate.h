@@ -19,4 +19,7 @@ public:
 	std::vector<Vector> Ope7(String^ input, std::vector<std::vector<Vector>> matrixs);
 	std::vector<Vector> Ope8(String^ input, std::vector<std::vector<Vector>> matrixs);
 	std::vector<Vector> Ope9(String^ input, std::vector<std::vector<Vector>> matrixs);
+	std::vector<Vector> Ope10(String^ input, std::vector<std::vector<Vector>> matrixs);
+	std::vector<Vector> Ope11(String^ input, std::vector<std::vector<Vector>> matrixs);
+	std::vector<Vector> Ope12(String^ input, std::vector<std::vector<Vector>> matrixs);
 };

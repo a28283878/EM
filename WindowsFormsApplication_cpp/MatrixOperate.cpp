@@ -6,12 +6,436 @@
 using namespace std;
 vector<Vector> gauss(vector<Vector> input);//純消去成上三角
 vector<Vector> gauss2(vector<Vector> input);//帶值在後面可以求解
-vector<Vector> count(String^ input, std::vector<std::vector<Vector>> matrixs);//四則運算
+vector<Vector> gaussOpe12(vector<Vector> input);
+vector<Vector> counting(String^ input, std::vector<std::vector<Vector>> matrixs);//四則運算
+
+vector<Vector> MatrixOperate::Ope12(String^ input, std::vector<std::vector<Vector>> matrixs) {
+	ofstream outfile("Matrix12.txt");
+	vector<Vector> temps;
+	char a = input[0];
+	if (a == 'U') {
+		cli::array<String^> ^matrix = input->Split('U');
+		temps = counting(matrix[1], matrixs);
+		temps = gaussOpe12(temps);
+		for (int i = 0; i < temps.size(); i++) {
+			for (int k = 0; k < temps[i].Data.size(); k++) {
+				outfile << temps[i].Data[k] << "  ";
+				cout << temps[i].Data[k] << "  ";
+			}
+			outfile << endl;
+			cout << endl;
+		}
+	}
+	else if (a == 'L') {
+		cli::array<String^> ^matrix = input->Split('L');
+		temps = Ope4(matrix[1], matrixs);
+		temps = gaussOpe12(temps);
+		vector<Vector> tempstrans;
+		for (int i = 0; i < temps[0].Data.size(); i++) {
+			Vector tranin;
+			tranin.Name = "$Trans";
+			for (int k = 0; k < temps.size(); k++) {
+				tranin.Data.push_back(temps[k].Data[i]);
+			}
+			tempstrans.push_back(tranin);
+		}
+		for (int i = 0; i < tempstrans.size(); i++) {
+			double num = tempstrans[i].Data[i];
+			for (int k = i; k < tempstrans[i].Data.size(); k++) {
+				tempstrans[k].Data[i] /= num;
+			}
+		}
+		for (int i = 0; i < tempstrans.size(); i++) {
+			for (int k = 0; k < tempstrans[i].Data.size(); k++) {
+				outfile << tempstrans[i].Data[k] << "  ";
+				cout << tempstrans[i].Data[k] << "  ";
+			}
+			outfile << endl;
+			cout << endl;
+		}
+	}
+	return temps;
+}
+
+vector<Vector> MatrixOperate::Ope11(String^ input, std::vector<std::vector<Vector>> matrixs) {
+	ofstream outfile("Matrix11.txt");
+	cli::array<String^> ^matrix = input->Split(',');
+	vector<Vector> tempstrans = Ope4(matrix[0], matrixs);
+	vector<Vector> temps = counting(matrix[0], matrixs);
+	vector<Vector> b = counting(matrix[1], matrixs);
+	vector<Vector> output;//AtA
+	/*for (int i = 0; i < temps.size(); i++) {
+		for (int k = 0; k < temps[i].Data.size(); k++) {
+			cout << temps[i].Data[k] << "  ";
+		}
+		cout << endl;
+	}
+	for (int i = 0; i < tempstrans.size(); i++) {
+		for (int k = 0; k < tempstrans[i].Data.size(); k++) {
+			cout << tempstrans[i].Data[k] << "  ";
+		}
+		cout << endl;
+	}
+	for (int i = 0; i < b.size(); i++) {
+		for (int k = 0; k < b[i].Data.size(); k++) {
+			cout << b[i].Data[k] << "  ";
+		}
+		cout << endl;
+	}*/
+	for (int i = 0; i < tempstrans.size(); i++) {
+		Vector temp;
+		temp.Name = "$multi";
+		for (int k = 0; k < temps[0].Data.size(); k++) {
+			double num = 0;
+			for (int j = 0; j < temps.size(); j++) {
+				num += tempstrans[i].Data[j] * temps[j].Data[k];
+			}
+			temp.Data.push_back(num);
+		}
+		output.push_back(temp);
+	}
+	vector<Vector> output2;//Atb
+	for (int i = 0; i < tempstrans.size(); i++) {
+		Vector temp;
+		temp.Name = "$multi";
+		for (int k = 0; k < b[0].Data.size(); k++) {
+			double num = 0;
+			for (int j = 0; j < b.size(); j++) {
+				num += tempstrans[i].Data[j] * b[j].Data[k];
+			}
+			temp.Data.push_back(num);
+		}
+		output2.push_back(temp);
+	}
+	/*for (int i = 0; i < output.size(); i++) {
+		for (int k = 0; k < output[i].Data.size(); k++) {
+			cout << output[i].Data[k] << "  ";
+		}
+		cout << endl;
+	}
+	for (int i = 0; i < output2.size(); i++) {
+		for (int k = 0; k < output2[i].Data.size(); k++) {
+			cout << output2[i].Data[k] << "  ";
+		}
+		cout << endl;
+	}
+	cout << 0;*/
+	//---------------------------------
+	for (int k = 0; k < output.size(); k++) {
+		output[k].Data.push_back(output2[k].Data[0]);
+	}
+	//塞進gauss2 再求B
+	vector<Vector> out = gauss2(output);
+	Vector initial;
+	vector<Vector> x(out.size(), initial);
+	for (int k = out.size() - 1; k >= 0; k--) {
+		x[k].Data.push_back(out[k].Data[out.size()] / out[k].Data[k]);
+		for (int j = k - 1; j >= 0; j--) {
+			out[j].Data[out.size()] -= out[j].Data[k] * x[k].Data[0];
+		}
+	}
+	for (int i = 0; i < x.size(); i++) {
+		for (int k = 0; k < x[i].Data.size(); k++) {
+			outfile << x[i].Data[k] << "  ";
+			cout << x[i].Data[k] << "  ";
+		}
+		outfile << endl;
+		cout << endl;
+	}
+	return temps;
+}
+
+vector<Vector> MatrixOperate::Ope10(String^ input, std::vector<std::vector<Vector>> matrixs) {
+	ofstream outfile("Matrix10.txt");
+	int stop = true;
+	vector<Vector> temps = counting(input, matrixs);//目標物
+	vector<Vector> initialx;
+	for (int i = 0; i < temps.size(); i++) {
+		Vector temp;
+		if (i == 0) temp.Data.push_back(1);
+		else temp.Data.push_back(0);
+		initialx.push_back(temp);
+	}
+	int check = 0;
+	while (stop) {
+		vector<Vector> output;
+		//-------powermethod------
+		for (int i = 0; i < temps.size(); i++) {
+			Vector temp;
+			temp.Name = "$multi";
+			for (int k = 0; k < initialx[0].Data.size(); k++) {
+				double num = 0;
+				for (int j = 0; j < temps[0].Data.size(); j++) {
+					num += temps[i].Data[j] * initialx[j].Data[k];
+				}
+				temp.Data.push_back(num);
+			}
+			output.push_back(temp);
+		}
+		//------正規劃-----
+		double num = 0;
+		for (int i = 0; i < output.size(); i++) {
+			num += output[i].Data[0] * output[i].Data[0];
+		}
+		num = pow(num, 0.5);
+		for (int i = 0; i < output.size(); i++) {
+			output[i].Data[0] = output[i].Data[0] / num;
+		}//normalization
+		/*for (int i = 0; i < initialx.size(); i++) {
+			cout << fabs(initialx[i].Data[0]) << "  ";
+			cout << endl;
+		}
+		for (int i = 0; i < output.size(); i++) {
+			cout << fabs(output[i].Data[0]) << "  ";
+			cout << endl;
+		}*/
+		stop = false;
+		for (int i = 0; i < output.size(); i++) {
+			if (fabs(fabs(initialx[i].Data[0])-fabs(output[i].Data[0])) > 0.0000001) stop = true;
+		}//checking
+		for (int i = 0; i < output.size(); i++) {
+			initialx[i].Data[0] = output[i].Data[0];
+		}
+	}
+	/*for (int i = 0; i < initialx.size(); i++) {
+		cout << initialx[i].Data[0] << "  ";
+		cout << endl;
+	}*/
+	//---------算出eigenVector了  換算value-----
+	vector<Vector> output2;//A*Xk
+	for (int i = 0; i < temps.size(); i++) {
+		Vector temp;
+		temp.Name = "$multi";
+		for (int k = 0; k < initialx[0].Data.size(); k++) {
+			double num = 0;
+			for (int j = 0; j < temps[0].Data.size(); j++) {
+				num += temps[i].Data[j] * initialx[j].Data[k];
+			}
+			temp.Data.push_back(num);
+		}
+		output2.push_back(temp);
+	}
+	vector<Vector> tran;//作轉制(A*Xk)T
+	for (int i = 0; i < output2[0].Data.size(); i++) {
+		Vector tranin;
+		tranin.Name = "$Trans";
+		for (int k = 0; k < output2.size(); k++) {
+			tranin.Data.push_back(output2[k].Data[i]);
+		}
+		tran.push_back(tranin);
+	}
+	vector<Vector> output3;//value
+	for (int i = 0; i < tran.size(); i++) {
+		Vector temp;
+		temp.Name = "$multi";
+		for (int k = 0; k < initialx[0].Data.size(); k++) {
+			double num = 0;
+			for (int j = 0; j < tran[0].Data.size(); j++) {
+				num += tran[i].Data[j] * initialx[j].Data[k];
+			}
+			temp.Data.push_back(num);
+		}
+		output3.push_back(temp);
+	}
+	//cout << "\n" << output3[0].Data[0]<<"\n";
+
+	//-----------------算出dominant eigenvelue了-------
+	int ansnum = 0;//答案要放在矩陣的哪裡
+	vector<Vector> identity;//eigenvalue答案
+	for (int i = 0; i < temps.size(); i++) {
+		Vector temp;
+		for (int k = 0; k < temps.size(); k++) {
+			temp.Data.push_back(0);
+		}
+		identity.push_back(temp);
+	}
+	identity[ansnum].Data[ansnum] = output3[0].Data[0];
+	ansnum++;
+	vector<Vector> eigenvector;
+	Vector dominantvector;
+	for (int i = 0; i < initialx.size(); i++) {
+		dominantvector.Data.push_back(initialx[i].Data[0]);
+	}
+	eigenvector.push_back(dominantvector);
+	//換算剩下的---------------------
+	int counting = 0;
+	for (int h = abs(output3[0].Data[0])-1; h > (abs(output3[0].Data[0])*(-1)); h--) {
+		cout << h <<" ";
+		vector<Vector> initialy;
+		for (int i = 0; i < temps.size(); i++) {
+			Vector temp;
+			if (i == 0) temp.Data.push_back(1);
+			else temp.Data.push_back(0);
+			initialy.push_back(temp);
+		}
+		stop = true;
+		while (stop) {
+			vector<Vector> output;//(A-hI)
+			//-------powermethod------
+			for (int i = 0; i < temps.size(); i++) {
+				Vector temp;
+				for (int k = 0; k < temps.size(); k++) {
+					if (i == k) temp.Data.push_back(temps[i].Data[k] - h);
+					else temp.Data.push_back(temps[i].Data[k]);
+				}
+				output.push_back(temp);
+			}
+			//(A-hI) inverse
+			vector<Vector> identitys;
+			for (int i = 0; i < output.size(); i++) {
+				Vector temp;
+				for (int k = 0; k < output.size(); k++) {
+					if (i == k)temp.Data.push_back(1);
+					else temp.Data.push_back(0);
+				}
+				identitys.push_back(temp);
+			}//製作單位矩陣
+			Vector initial;
+			vector<Vector> x(output.size(), initial);
+			for (int i = 0; i < output.size(); i++) {
+				vector<Vector> temp = output;
+				for (int k = 0; k < output.size(); k++) {
+					temp[k].Data.push_back(identitys[i].Data[k]);
+				}
+				temp = gauss2(temp);
+				for (int k = temp.size() - 1; k >= 0; k--) {
+					x[k].Data.push_back(temp[k].Data[temp.size()] / temp[k].Data[k]);
+					for (int j = k - 1; j >= 0; j--) {
+						temp[j].Data[temp.size()] -= temp[j].Data[k] * x[k].Data[i];
+					}
+				}
+			}
+			/*for (int i = 0; i < temps.size(); i++) {
+				for (int k = 0; k < temps.size(); k++) {
+					outfile << x[i].Data[k] << "  ";
+				}
+				outfile << endl;
+			}*/
+			vector<Vector> alloutput;//(A-hI)-1 * K
+			for (int i = 0; i < temps.size(); i++) {
+				Vector temp;
+				temp.Name = "$multi";
+				for (int k = 0; k < initialy[0].Data.size(); k++) {
+					double num = 0;
+					for (int j = 0; j < temps[0].Data.size(); j++) {
+						num += x[i].Data[j] * initialy[j].Data[k];
+					}
+					temp.Data.push_back(num);
+				}
+				alloutput.push_back(temp);
+			}
+			//------正規劃-----
+			double num = 0;
+			for (int i = 0; i < alloutput.size(); i++) {
+				num += alloutput[i].Data[0] * alloutput[i].Data[0];
+			}
+			num = pow(num, 0.5);
+			for (int i = 0; i < alloutput.size(); i++) {
+				alloutput[i].Data[0] = alloutput[i].Data[0] / num;
+			}//normalization
+			 /*for (int i = 0; i < initialy.size(); i++) {
+			 outfile << fabs(initialy[i].Data[0]) << "  ";
+			 outfile << endl;
+			 }
+			 for (int i = 0; i < alloutput.size(); i++) {
+			 outfile << fabs(alloutput[i].Data[0]) << "  ";
+			 outfile << endl;
+			 }*/
+			stop = false;
+			for (int i = 0; i < initialy.size(); i++) {
+				if (fabs(fabs(initialy[i].Data[0]) - fabs(alloutput[i].Data[0])) > 0.00001) stop = true;
+			}//checking
+			for (int i = 0; i < initialy.size(); i++) {
+				initialy[i].Data[0] = alloutput[i].Data[0];
+			}
+		}
+		/*for (int i = 0; i < initialy.size(); i++) {
+			outfile << initialy[i].Data[0]<<endl;
+		}
+		for (int i = 0; i < initialy.size(); i++) {
+			outfile << eigenvector[counting].Data[i] << endl;
+		}*/
+		int same = true;
+		for (int i = 0; i < initialy.size(); i++) {
+			if (fabs(fabs(initialy[i].Data[0]) - fabs(eigenvector[counting].Data[i])) < 0.00001) same = true;
+			else same = false;
+		}
+		if (!same) {
+			if (ansnum < temps.size()) {
+				//cout << "OK" << "  ";
+				counting++;
+				same = true;
+				Vector neweigenvector;
+				for (int i = 0; i < initialy.size(); i++) {
+					neweigenvector.Data.push_back(initialy[i].Data[0]);
+				}
+				eigenvector.push_back(neweigenvector);
+				vector<Vector> output4;//A*Xk
+				for (int i = 0; i < temps.size(); i++) {
+					Vector temp;
+					temp.Name = "$multi";
+					for (int k = 0; k < initialy[0].Data.size(); k++) {
+						double num = 0;
+						for (int j = 0; j < temps[0].Data.size(); j++) {
+							num += temps[i].Data[j] * initialy[j].Data[k];
+						}
+						temp.Data.push_back(num);
+					}
+					output4.push_back(temp);
+				}
+				vector<Vector> tran2;//作轉制(A*Xk)T
+				for (int i = 0; i < output4[0].Data.size(); i++) {
+					Vector tranin;
+					tranin.Name = "$Trans";
+					for (int k = 0; k < output4.size(); k++) {
+						tranin.Data.push_back(output4[k].Data[i]);
+					}
+					tran2.push_back(tranin);
+				}
+				vector<Vector> output5;//value
+				for (int i = 0; i < tran2.size(); i++) {
+					Vector temp;
+					temp.Name = "$multi";
+					for (int k = 0; k < initialy[0].Data.size(); k++) {
+						double num = 0;
+						for (int j = 0; j < tran2[0].Data.size(); j++) {
+							num += tran2[i].Data[j] * initialy[j].Data[k];
+						}
+						temp.Data.push_back(num);
+					}
+					output5.push_back(temp);
+				}
+				identity[ansnum].Data[ansnum] = output5[0].Data[0];
+				ansnum++;
+				h = output5[0].Data[0] - 1;
+			}
+		}
+	}
+	cout << endl;
+	for (int i = 0; i < eigenvector.size(); i++) {
+		for (int k = 0; k < eigenvector[i].Data.size(); k++) {
+			outfile << eigenvector[k].Data[i] << "   ";
+			//cout << eigenvector[k].Data[i] << "   ";
+		}
+		outfile << endl;
+		//cout<<endl;
+	}
+	for (int i = 0; i < temps.size(); i++) {
+		for (int k = 0; k < temps[i].Data.size(); k++) {
+			outfile << identity[i].Data[k] << "   ";
+			//cout << identity[i].Data[k] << "   ";
+		}
+		outfile << endl;
+		//cout << endl;
+	}
+	return temps;
+}
 
 vector<Vector> MatrixOperate::Ope9(String^ input, std::vector<std::vector<Vector>> matrixs) {
+	ofstream outfile("Matrix9.txt");
 	double num = Ope6(input, matrixs);
 	int ansnum = 0;//答案要放在矩陣的哪裡
-	vector<Vector> original = count(input, matrixs);
+	vector<Vector> original = counting(input, matrixs);
 	if (original.size() % 2 == 1) {
 		num = num*(-1);
 	}
@@ -51,9 +475,11 @@ vector<Vector> MatrixOperate::Ope9(String^ input, std::vector<std::vector<Vector
 	}
 	for (int i = 0; i < original.size(); i++) {
 		for (int k = 0; k < original.size(); k++) {
-			cout << identity[i].Data[k] << "  ";
+			outfile << identity[i].Data[k] << "  ";
+			//cout << identity[i].Data[k] << "  ";
 		}
-		cout << endl;
+		outfile << endl;
+		//cout << endl;
 	}
 	Vector initial;
 	vector<Vector> eigenvector;
@@ -160,15 +586,23 @@ vector<Vector> MatrixOperate::Ope9(String^ input, std::vector<std::vector<Vector
 	}
 	for (int i = 0; i < eigenvector.size(); i++) {
 		for (int k = 0; k < eigenvector[i].Data.size(); k++) {
-			if (eigenvector[k].Data[i] == 0) cout << abs(eigenvector[k].Data[i]) << "  ";
-			else cout << eigenvector[k].Data[i] << "  ";
+			if (eigenvector[k].Data[i] == 0) {
+				outfile << abs(eigenvector[k].Data[i]) << "  ";
+				//cout << abs(eigenvector[k].Data[i]) << "  ";
+			}
+			else {
+				outfile << eigenvector[k].Data[i] << "  ";
+				//cout << eigenvector[k].Data[i] << "  ";
+			}
 		}
-		cout << endl;
+		outfile << endl;
+		//cout << endl;
 	}
 	return original;
 }
 
 vector<Vector> MatrixOperate::Ope8(String^ input, std::vector<std::vector<Vector>> matrixs) {
+	ofstream outfile("Matrix8.txt");
 	vector<Vector> adjoint;
 	adjoint = Ope7(input, matrixs);
 	double det = Ope6(input, matrixs);
@@ -177,12 +611,18 @@ vector<Vector> MatrixOperate::Ope8(String^ input, std::vector<std::vector<Vector
 			adjoint[i].Data[k] = adjoint[i].Data[k]* det;
 		}
 	}
-
+	for (int i = 0; i < adjoint.size(); i++) {
+		for (int k = 0; k < adjoint[i].Data.size(); k++) {
+			outfile << adjoint[i].Data[k] << "  ";
+		}
+		outfile << endl;
+	}
 	return adjoint;
 }
 
 vector<Vector> MatrixOperate::Ope7(String^ input, std::vector<std::vector<Vector>> matrixs) {
-	vector<Vector> inverse = count(input, matrixs);
+	ofstream outfile("Matrix7.txt");
+	vector<Vector> inverse = counting(input, matrixs);
 	if(inverse.size() != inverse[0].Data.size()) throw "行列不同";//行列不同
 	double det = Ope6(input, matrixs);
 	if (det == 0) throw "無解";
@@ -210,17 +650,19 @@ vector<Vector> MatrixOperate::Ope7(String^ input, std::vector<std::vector<Vector
 			}
 		}
 	}
-	/*for (int i = 0; i < x.size(); i++) {
+	for (int i = 0; i < x.size(); i++) {
 		for (int k = 0; k < x.size(); k++) {
-			cout << x[i].Data[k] << " ";
+			outfile<< x[i].Data[k] << " ";
+			//cout << x[i].Data[k] << " ";
 		}
-		cout << endl;
-	}*/
+		outfile << endl;
+		//cout << endl;
+	}
 	return x;
 }
 
 double MatrixOperate::Ope6(String^ input, std::vector<std::vector<Vector>> matrixs) {
-	vector<Vector> det = count(input,matrixs);
+	vector<Vector> det = counting(input,matrixs);
 	det = gauss(det);
 	double detout = 1;
 	for (int i = 0; i < det.size(); i++) {
@@ -231,12 +673,20 @@ double MatrixOperate::Ope6(String^ input, std::vector<std::vector<Vector>> matri
 }
 
 vector<Vector> MatrixOperate::Ope5(String^ input, std::vector<std::vector<Vector>> matrixs) {
-	vector<Vector> origin = count(input, matrixs);
+	ofstream outfile("Matrix5.txt");
+	vector<Vector> origin = counting(input, matrixs);
+	for (int i = 0; i < origin.size(); i++) {
+		for (int k = 0; k < origin[i].Data.size(); k++) {
+			outfile << origin[i].Data[k] << "  ";
+		}
+		outfile << endl;
+	}
 	return origin;
 }
 
 vector<Vector> MatrixOperate::Ope4(String^ input, std::vector<std::vector<Vector>> matrixs) {
-	vector<Vector> origin = count(input, matrixs);
+	ofstream outfile("Matrix4.txt");
+	vector<Vector> origin = counting(input, matrixs);
 	vector<Vector> tran;
 	for (int i = 0; i < origin[0].Data.size(); i++) {
 		Vector tranin;
@@ -246,13 +696,18 @@ vector<Vector> MatrixOperate::Ope4(String^ input, std::vector<std::vector<Vector
 		}
 		tran.push_back(tranin);
 	}
-
+	for (int i = 0; i < tran.size(); i++) {
+		for (int k = 0; k < tran[i].Data.size(); k++) {
+			outfile << tran[i].Data[k] << "  ";
+		}
+		outfile << endl;
+	}
 	return tran;
 }
 
 int MatrixOperate::Ope3(String^ input, std::vector<std::vector<Vector>> matrixs) {
-	ofstream outfile("output.txt");
-	vector<Vector> rank = count(input, matrixs);
+	ofstream outfile("Matrix3.txt");
+	vector<Vector> rank = counting(input, matrixs);
 	rank = gauss(rank);
 	int ranknum = 0;
 	for (int i = 0; i < rank.size(); i++) {
@@ -273,11 +728,18 @@ int MatrixOperate::Ope3(String^ input, std::vector<std::vector<Vector>> matrixs)
 }
 
 vector<Vector> MatrixOperate::Ope1(String^ input, std::vector<std::vector<Vector>> matrixs) {
-	vector<Vector> add = count(input, matrixs);
+	ofstream outfile("Matrix1&2.txt");
+	vector<Vector> add = counting(input, matrixs);
+	for (int i = 0; i < add.size(); i++) {
+		for (int k = 0; k < add[i].Data.size(); k++) {
+			outfile << add[i].Data[k] << "  ";
+		}
+		outfile << endl;
+	}
 	return add;
 }
 
-vector<Vector> count(String^ input, std::vector<std::vector<Vector>> matrixs) {
+vector<Vector> counting(String^ input, std::vector<std::vector<Vector>> matrixs) {
 	vector<string> list;
 	for (int i = 0; i < input->Length; i++) {
 		if ((input[i]) == '$') {
@@ -457,7 +919,7 @@ vector<Vector> count(String^ input, std::vector<std::vector<Vector>> matrixs) {
 		}
 	}
 	int flag = 0;
-	int count = 0;
+	int counting = 0;
 	for (int i = 0; i < row; i++)
 	{
 		flag = 0;
@@ -469,7 +931,7 @@ vector<Vector> count(String^ input, std::vector<std::vector<Vector>> matrixs) {
 				break;
 			}
 		}
-		if (flag) count++;
+		if (flag) counting++;
 	}
 	return input;
 }*/
@@ -506,11 +968,11 @@ vector<Vector> gauss(vector<Vector> input) {
 	}
 	if (input[input.size()-1].Data[input.size()-1] != 0) {
 		for (int i = 0; i < input.size()-1; i++) {
-			int count = 0;
+			int counting = 0;
 			for (int k = 0; k < input[i].Data.size(); k++) {
-				if (input[i].Data[k] != 0) count++;
+				if (input[i].Data[k] != 0) counting++;
 			}
-			if (input[i].Data[input.size()-1] != 0 && count == 1) {
+			if (input[i].Data[input.size()-1] != 0 && counting == 1) {
 				input[i].Data[input.size()-1] = 0;
 			}
 		}
@@ -520,7 +982,7 @@ vector<Vector> gauss(vector<Vector> input) {
 //a+x 後面有加x 
 vector<Vector> gauss2(vector<Vector> input) {
 	for (int i = 0; i < input.size(); i++) {
-		/*double maxEl;
+		double maxEl;
 		int maxRow;
 		maxEl = abs(input[i].Data[i]);
 		maxRow = i;
@@ -534,7 +996,7 @@ vector<Vector> gauss2(vector<Vector> input) {
 			double temp = input[maxRow].Data[k];
 			input[maxRow].Data[k] = input[i].Data[k];
 			input[i].Data[k] = temp;
-		}*/
+		}
 		for (int k = i + 1; k < input.size(); k++) {
 			double c;
 			if (input[i].Data[i] == 0) c = 0;
@@ -542,15 +1004,52 @@ vector<Vector> gauss2(vector<Vector> input) {
 			for (int j = i; j < input.size() +1 ; j++) {
 				if (i == j)input[k].Data[j] = 0;
 				else {
-					/*double check = (input[k].Data[j] / input[i].Data[j]) * (-1);
-					if(check == c) input[k].Data[j] = 0;
-					else
-					{
-					input[k].Data[j] += c*input[i].Data[j];
-					}*/
 					input[k].Data[j] += c*input[i].Data[j];
 					if (abs(input[k].Data[j]) < 0.000000001) input[k].Data[j] = 0;
 				}
+			}
+		}
+	}
+	return input;
+}
+vector<Vector> gaussOpe12(vector<Vector> input) {
+	for (int i = 0; i< input.size(); i++) {
+		double maxEl = 0;
+		int maxRow;
+		maxEl = abs(input[i].Data[i]);
+		maxRow = i;
+		for (int k = i + 1; k < input.size(); k++) {
+			if (abs(input[k].Data[i])>maxEl) {
+				maxEl = input[k].Data[i];
+				maxRow = k;
+			}
+		}
+		/*for (int k = i; k < input.size(); k++) {
+			double temp = input[maxRow].Data[k];
+			input[maxRow].Data[k] = input[i].Data[k];
+			input[i].Data[k] = temp;
+		}*/
+		for (int k = i + 1; k < input.size(); k++) {
+			double c;
+			if (input[i].Data[i] == 0) c = 0;
+			else c = (input[k].Data[i] / input[i].Data[i])*(-1);
+			for (int j = i; j < input.size(); j++) {
+				if (i == j)input[k].Data[j] = 0;
+				else {
+					input[k].Data[j] += c*input[i].Data[j];
+					if (fabs(input[k].Data[j]) < 0.000000001) input[k].Data[j] = 0;
+				}
+			}
+		}
+	}
+	if (input[input.size() - 1].Data[input.size() - 1] != 0) {
+		for (int i = 0; i < input.size() - 1; i++) {
+			int counting = 0;
+			for (int k = 0; k < input[i].Data.size(); k++) {
+				if (input[i].Data[k] != 0) counting++;
+			}
+			if (input[i].Data[input.size() - 1] != 0 && counting == 1) {
+				input[i].Data[input.size() - 1] = 0;
 			}
 		}
 	}
