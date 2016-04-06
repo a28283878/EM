@@ -171,13 +171,11 @@ bool VectorOperate::Ope15(String^ input, std::vector<Vector> vectors) {
 }
 
 double  VectorOperate::Ope10(String^ input, std::vector<Vector> vectors) {
-	int num = 0;
+	int flag = true;
 	String^ a, ^ b;
 	for (int i = 0; i < input->Length; i++) {
-		if (input[i] == '(') num++;
-		else if (input[i] == ')') break;
-		else if (input[i] == ',') num++;
-		else if (num == 1) {
+		if (input[i] == ',') flag = false;
+		if (flag) {
 			a += input[i];
 		}
 		else {
@@ -207,13 +205,11 @@ double  VectorOperate::Ope10(String^ input, std::vector<Vector> vectors) {
 }
 
 double  VectorOperate::Ope13(String^ input, std::vector<Vector> vectors) {
-	int num = 0;
+	int flag = true;
 	String^ a, ^ b;
 	for (int i = 0; i < input->Length; i++) {
-		if (input[i] == '(') num++;
-		else if (input[i] == ')') break;
-		else if (input[i] == ',') num++;
-		else if (num == 1) {
+		if (input[i] == ',') flag = false;
+		if (flag) {
 			a += input[i];
 		}
 		else {
@@ -246,13 +242,11 @@ double  VectorOperate::Ope13(String^ input, std::vector<Vector> vectors) {
 
 bool  VectorOperate::Ope12(String^ input, std::vector<Vector> vectors) {
 	//dot(a,b)/lbl/lbl * vector(b)
-	int num = 0;
+	int flag = true;
 	String^ a, ^ b;
 	for (int i = 0; i < input->Length; i++) {
-		if (input[i] == '(') num++;
-		else if (input[i] == ')') break;
-		else if (input[i] == ',') num++;
-		else if (num == 1) {
+		if (input[i] == ',') flag = false;
+		if (flag) {
 			a += input[i];
 		}
 		else {
@@ -274,13 +268,11 @@ bool  VectorOperate::Ope12(String^ input, std::vector<Vector> vectors) {
 
 bool  VectorOperate::Ope11(String^ input, std::vector<Vector> vectors) {
 	//dot(a,b)/lbl/lbl * vector(b)
-	int num = 0;
+	int flag = true;
 	String^ a, ^ b;
 	for (int i = 0; i < input->Length; i++) {
-		if (input[i] == '(') num++;
-		else if (input[i] == ')') break;
-		else if (input[i] == ',') num++;
-		else if (num == 1) {
+		if (input[i] == ',') flag = false;
+		if (flag) {
 			a += input[i];
 		}
 		else {
@@ -335,13 +327,11 @@ bool  VectorOperate::Ope11(String^ input, std::vector<Vector> vectors) {
 Vector  VectorOperate::Ope9(String^ input, std::vector<Vector> vectors) {
 	//dot(a,b)/lbl/lbl * vector(b)
 	//把input的名字傳進s中
-	int num = 0;
+	int flag = true;
 	String^ a, ^ b;
 	for (int i = 0; i < input->Length; i++) {
-		if (input[i] == '(') num++;
-		else if (input[i] == ')') break;
-		else if (input[i] == ',') num++;
-		else if (num == 1) {
+		if (input[i] == ',') flag = false;
+		if (flag) {
 			a += input[i];
 		}
 		else {
@@ -372,13 +362,11 @@ Vector  VectorOperate::Ope9(String^ input, std::vector<Vector> vectors) {
 }
 
 Vector  VectorOperate::Ope8(String^ input, std::vector<Vector> vectors) {
-	int num = 0;
+	int flag = true;
 	String^ a, ^ b;
 	for (int i = 0; i < input->Length; i++) {
-		if (input[i] == '(') num++;
-		else if (input[i] == ')') break;
-		else if (input[i] == ',') num++;
-		else if (num == 1) {
+		if (input[i] == ',') flag = false;
+		if (flag) {
 			a += input[i];
 		}
 		else {
@@ -394,7 +382,7 @@ Vector  VectorOperate::Ope8(String^ input, std::vector<Vector> vectors) {
 	for (int i = 0; i < com[0].Data.size(); i++) {
 		sum += com[0].Data[i] * com[1].Data[i];
 	}
-	double bvalue;//com 分母
+	double bvalue = 0;//com 分母
 	for (int i = 0; i < com[1].Data.size(); i++) {
 		bvalue += com[1].Data[i] * com[1].Data[i];
 	}
@@ -407,13 +395,11 @@ Vector  VectorOperate::Ope8(String^ input, std::vector<Vector> vectors) {
 }
 
 Vector  VectorOperate::Ope7(String^ input, std::vector<Vector> vectors) {
-	int num = 0;
+	int flag = true;
 	String^ a,^ b;
 	for (int i = 0; i < input->Length; i++) {
-		if (input[i] == '(') num++;
-		else if (input[i] == ')') break;
-		else if (input[i] == ',') num++;
-		else if (num == 1) {
+		if (input[i] == ',') flag = false;
+		if (flag) {
 			a += input[i];
 		}
 		else {
@@ -469,8 +455,11 @@ double VectorOperate::Ope5(String^ input, std::vector<Vector> vectors) {
 }
 
 Vector VectorOperate::Ope1(String^ input, vector<Vector> vectors) {
-		Vector v = count(input, vectors);
-		return v;
+	ofstream outfile("Vector1&2&3&4.txt");
+	Vector v = count(input, vectors);
+	for (int i = 0; i<v.Data.size(); i++) std::cout << v.Data[i] << "  ";
+	outfile << "\n";
+	return v;
 	//--------------------------------------------------------------------------------//
 	//cout << temps.size();
 	//cout << temps[0].Name;
